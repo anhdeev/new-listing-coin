@@ -26,7 +26,6 @@ class CoinGeckoClient:
     # Get platform, id, symbol,name
     def _getDetail(self, item):
         tokenId = item['id']
-        tokenId = 'uniswap'
         print ('Get coin data: ' + tokenId)
         # Get data via API
         data1 = self.api.get_coins_markets('usd', ids=tokenId)
