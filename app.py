@@ -87,7 +87,7 @@ def _timer(client):
     try:
         if client:
             rst = client.update()
-            if rst:
+            if type(rst) is dict:
                 formatted_msg = formatString({
                     'platform': rst.get('platform'),
                     'platform_image': rst.get('platform_image'),
@@ -106,6 +106,8 @@ def _timer(client):
                 })
                 #print(formatted_msg)
                 client.tele.send(formatted_msg, True)
+            else:
+                pass
         threading.Timer(60, _timer, [client]).start()
     except Exception as e:
         print(e)
