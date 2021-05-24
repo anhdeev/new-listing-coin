@@ -2,7 +2,7 @@ import telegram
 from telegram import ParseMode
 
 #TODO Store key via env
-MY_TELEGRAM_KEY="1697098452:AAE6Jq-dlO0vMyOQdxgzqTEZV3K-5LpkNWo"
+MY_TELEGRAM_KEY=""
 MY_CHAT_ID='@newlistingtoken'
 
 class TeleBot(object):
