@@ -1,8 +1,8 @@
 import telegram
 from telegram import ParseMode
 
-#TODO Store key via env
-MY_TELEGRAM_KEY=""
+# Get environment variables
+MY_TELEGRAM_KEY = os.getenv('BOT_KEY')
 MY_CHAT_ID='@newlistingtoken'
 
 class TeleBot(object):
