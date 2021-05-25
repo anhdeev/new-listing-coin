@@ -4,11 +4,12 @@ from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 
 platform_map = {
-    'bscscan.com': 'Binance smart chain',
-    'etherscan.io': 'Ethereum',
-    'explorer.solana.com': 'Solana',
-    'tronscan.org': 'Tron',
-    'polkascan.io': 'Polkadot'
+    'bscscan.com': 'binance-smart-chain',
+    'etherscan.io': 'ethereum',
+    'explorer.solana.com': 'solana',
+    'tronscan.org': 'tron',
+    'polkascan.io': 'polkadot',
+    'ftmscan.com': 'fantom'
 }
 
 class Crawler(object):
@@ -31,9 +32,15 @@ class CgCrawler(Crawler):
         self.icon = None
         self.explorer = None
         self.platform = None
+        self.exchange = ''
         self.contract_selector = 'i.text-lg:nth-child(2)'
         self.icon_selector = 'div.coin-tag > span:nth-child(1) > img:nth-child(1)'
-        self.explorer_selector = 'div.coin-link-row:nth-child(3) > div:nth-child(2) > a:nth-child(1)'
+        self.explorer_selector = [
+            'div.coin-link-row:nth-child(3) > div:nth-child(2) > a:nth-child(1)',
+            'div.coin-link-row:nth-child(2) > div:nth-child(2) > a:nth-child(1)'
+        ]
+        self.exchange_selector = ''
+
         super().download()
 
     def getContract(self):
@@ -49,14 +56,17 @@ class CgCrawler(Crawler):
             if tag:
                 self.icon = tag['src']
 
-            tag = self.soup.select_one(self.explorer_selector)
-            if tag:
-                self.explorer = tag['href']
-                domain = urlparse(self.explorer).netloc
-                print (domain)
+            domain=None
+            for sel in self.explorer_selector:
+                tag = self.soup.select_one(sel)
+                if tag:
+                    self.explorer = tag['href']
+                    domain = urlparse(self.explorer).netloc
+                    print (domain)
+                    break
 
             if(self.icon and self.contract):
-                return {'platform_image': self.icon, 'contract': self.contract, 'explorer': self.explorer, 'platform': platform_map[domain]}
+                return {'platform_image': self.icon, 'contract': self.contract, 'explorer': self.explorer, 'platform': platform_map.get(domain)}
             else:
                 return None
         except Exception as e:

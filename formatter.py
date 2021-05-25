@@ -1,5 +1,6 @@
 from string import Template
 import re
+from sys import platform
 
 TEMPLATE=[
 '⛓ Platform: $platform',
@@ -11,17 +12,35 @@ TEMPLATE=[
 '💎 24h High: $high_24h',
 '💎 24h Low: $low_24h',
 '📈 <a href="https://www.coingecko.com/en/coins/$id">Coingecko</a>',
-'📈 <a href="https://dex.guru/token/$contract">Dex.Guru</a>',
-'📈 <a href="https://charts.bogged.finance/?token=$contract">BoggedChart</a>',
 '📈 <a href="$explorer">Explorer</a>',
 ]
 
-def formatString(obj):
-    template=""
-    for line in TEMPLATE:
-        keys = [word for word in re.split(' |<|\'|\n|/|\"|=', line) if word.startswith('$')]
-        if len(keys) and obj.get(keys[0][1:]):
-            template+=line + "\n"
+CHART={
+    'binance-smart-chain': '📈 <a href="https://charts.bogged.finance/?token=$contract">BoggedChart</a>',
+    'ethereum': '📈 <a href="https://dex.guru/token/$contract">Dex.Guru</a>',
+    'solana': None,
+    'tron': None,
+    'polkadot': None,
+    'fantom': None,
+    'blockchain': None
+}
 
-    t = Template(template)
-    return t.substitute(**obj)
+def formatString(obj):
+    try:
+        template=""
+
+        if not obj['platform']:
+            obj['platform'] = 'blockchain'
+
+        for line in TEMPLATE:
+            keys = [word for word in re.split(' |<|\'|\n|/|\"|=', line) if word.startswith('$')]
+            if len(keys) and obj.get(keys[0][1:]):
+                template+=line + "\n"
+
+        if  CHART.get(obj['platform']):
+            template += CHART[obj.get('platform')]
+
+        t = Template(template)
+        return t.substitute(**obj)
+    except Exception as e:
+        raise(e)
