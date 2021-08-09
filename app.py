@@ -11,15 +11,15 @@ class CoinGeckoClient:
         self.tele = TeleBot()
         self.coinList = []
         self.coinListUpdate= []
-        self.coinNumber = 0
-        self._refreshCoinList();
+        self._refreshCoinList()
+        self.coinList = self.coinListUpdate
+        self.coinNumber = len(self.coinList)
         self.waiting = []
         time.sleep(30)
 
     def _refreshCoinList(self):
         try:
             self.coinListUpdate = self.api.get_coins_list()
-            self.coinNumber = len(self.coinListUpdate)
         except Exception as e:
             print(e)
 
@@ -63,6 +63,7 @@ class CoinGeckoClient:
     def _extractNewCoin(self, length):
         index = 0
         while index < length:
+            
             if index >= self.coinNumber:
                 return self.coinListUpdate[index]
             if self.coinList[index]['id'] != self.coinListUpdate[index]['id']:
